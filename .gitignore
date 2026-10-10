@@ -1,0 +1,6 @@
+.venv/
+.idea/
+__pycache__/
+streamstats.egg-info/
+.pytest_cache/
+.ruff_cache/

@@ -1,6 +1,3 @@
-from __future__ import annotations
-
-
 class StreamStatsError(Exception):
     """Базовое исключение пакета."""
 

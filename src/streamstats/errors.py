@@ -19,6 +19,8 @@ class InvalidEventError(StreamStatsError):
                  line_number: int | None = None,
                  filename: str | None = None) -> None:
         parts = [message]
+        if field is not None:
+            parts.append(f"[{field}]")
         if filename is not None and line_number is not None:
             parts.append(f"{filename}:{line_number}")
         super().__init__(" ".join(parts))

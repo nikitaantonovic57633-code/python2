@@ -3,7 +3,6 @@ from datetime import datetime
 
 from .errors import InvalidEventError, InvalidTimestampError
 
-REQUIRED_FIELDS = ("timestamp", "level", "source", "message")
 VALID_LEVELS = frozenset({"DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"})
 ERROR_LEVELS = frozenset({"ERROR", "CRITICAL"})
 
@@ -59,12 +58,18 @@ def build_event(data: dict,
                                     field="timestamp",
                                     line_number=line_number,
                                     filename=filename) from exc
+    if ts.tzinfo is None:
+        raise InvalidTimestampError(f"Временная метка без часового пояса: {ts_raw}",
+            field="timestamp",
+            line_number=line_number,
+            filename=filename)
     level = _require_str(data, "level", filename=filename, line_number=line_number)
     if level not in VALID_LEVELS:
-        raise InvalidEventError(f"Недопустимый уровень {level}. Разрешенные значения: {VALID_LEVELS}",
+        raise InvalidEventError(f"Недопустимый уровень {level}",
                                 field="level",
                                 line_number=line_number,
                                 filename=filename)
     source = _require_str(data, "source", filename=filename, line_number=line_number)
     message = _get_str(data, "message", filename=filename, line_number=line_number)
+
     return Event(timestamp=ts, level=level, source=source, message=message)
